@@ -1,5 +1,4 @@
-# Animation of background
-
+# SNAKE GAME BY mhtsort 2019
 import tkinter as tk
 
 class App():
