@@ -45,7 +45,7 @@ class Board():
         for i in self.board:
             print(i)
             boardasstring+="{} \n".format(i)
-        return boardasstring
+        return boardasstring[:-3] #without the last " \n"
     def _str_print_board(self):
         '''
         Board as string
