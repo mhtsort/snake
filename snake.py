@@ -47,6 +47,9 @@ class Board():
             boardasstring+="{} \n".format(i)
         return boardasstring
     def _str_print_board(self):
+        '''
+        Board as string
+        '''
         listform=self._printboard()
         listform=listform.replace("[","").replace("]","").replace(","," ")
         return listform
