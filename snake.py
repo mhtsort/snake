@@ -19,13 +19,13 @@ class App():
         self.debug.pack(side="left")
         self.statuslabel=tk.Label(self.frame,text="Status",background="lightgreen")
         self.statuslabel.pack(side="bottom")
-        self.board=Board(10,10)
+        self.board=Board(20,20)
 
     def restartgame(self):
         pass
     def printstatus(self):
-        self.board._printboard()
-        self.statuslabel.configure(text="TODO")
+        txt=self.board._str_print_board()
+        self.statuslabel.configure(text=txt)
 class Board():
     def createtiles(self,rows,cols):
         '''
@@ -44,9 +44,12 @@ class Board():
         boardasstring=""
         for i in self.board:
             print(i)
-            boardasstring+="\n {}".format(i)
-        print("___________")
+            boardasstring+="{} \n".format(i)
         return boardasstring
+    def _str_print_board(self):
+        listform=self._printboard()
+        listform=listform.replace("[","").replace("]","").replace(","," ")
+        return listform
     def __init__(self,horizontal,vertical):
         self.horizontal_tiles_num=horizontal
         self.vertical_tiles_num=vertical
