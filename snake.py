@@ -2,7 +2,7 @@
 import tkinter as tk
 import snake_class as sn
 
-
+ 
 class App():
     def __init__(self,root,width=600,height=400):
         self.root=root
