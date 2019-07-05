@@ -24,7 +24,7 @@ class Snake():
                 return tuple(res)
         else:raise ValueError('lists and tuples only')
     def head(self):
-        '''
+        ''' 
         Return the head of the snake
         '''
         return self.body[0]  #TODO getters setters
