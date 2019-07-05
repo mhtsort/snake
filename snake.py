@@ -1,10 +1,13 @@
 # SNAKE GAME BY mhtsort 2019
 import tkinter as tk
-import snake_class
+import snake_class as sn
+
 
 class App():
     def __init__(self,root,width=600,height=400):
         self.root=root
+        self._STOP=True
+        self.speed=100
         #Application width and hegth
         self.width=width
         self.height=height
@@ -21,6 +24,9 @@ class App():
         self.statuslabel=tk.Label(self.frame,text="Status",background="lightgreen")
         self.statuslabel.pack(side="bottom")
         self.board=Board(20,20)
+        self.snake=sn.Snake([(3,5),(4,5),(5,5)])
+        self.keybindings()
+        print(self.snake)
         #Create canvas based on Board size
         self.canvas=tk.Canvas(root,width=20*20,height=20*20,background="lightblue")
         self.canvas.pack()
@@ -28,10 +34,58 @@ class App():
         pass
     def printstatus(self):
         txt=self.board._str_print_board()
-        self.statuslabel.configure(text=txt)
-        self.canvas.create_polygon(20,20,20,40,40,40,40,20,outline="red",tag="snake")
+        #self.statuslabel.configure(text=txt)
+        self.statuslabel.configure(text=self.snake)
+        #self.canvas.create_polygon(20,20,20,40,40,40,40,20,outline="red",tag="snake")
+        self.drawsnake(self.snake)
+    def drawsnake(self,snake):
+        self.canvas.delete("snake")
+        for tile in snake.body:
+            self.drawpart(tile)
+            print("Draw {}".format(tile))
+    def drawpart(self,tile):
+        x, y=tile
+        x*=20
+        y*=20
+        self.canvas.create_polygon(x-10,y-10,x+10,y-10,x+10,y+10,x-10,y+10,outline="red",fill="blue",tag="snake")
+        print("Done drawing ({},{})-({},{})-({},{})-({},{})".format(x-10,y-10,x+10,y-10,x+10,y+10,x-10,y+10))
+    def keybindings(self):
+        self.root.bind("<Up>",self._up_pressed)
+        self.root.bind("<Down>",self._down_pressed)
+        self.root.bind("<Left>",self._left_pressed)
+        self.root.bind("<Right>",self._right_pressed)
+        self.root.bind("s",self.callrun)
+        self.root.bind("<space>",self.grow)
+    def _up_pressed(self,event):
+        self.statuslabel.configure(text="UP PRESSED")
+        self.snake.direction(self.snake.UP)
+        self.snake.move(self.snake.add(self.snake.head(),self.snake.heading))
+    def _down_pressed(self,event):
+        self.statuslabel.configure(text="DOWN PRESSED")
+        self.snake.direction(self.snake.DOWN)
+        self.snake.move(self.snake.add(self.snake.head(),self.snake.heading))
+    def _left_pressed(self,event):
+        self.statuslabel.configure(text="LEFT PRESSED")
+        self.snake.direction(self.snake.LEFT)
+        self.snake.move(self.snake.add(self.snake.head(),self.snake.heading))
+    def _right_pressed(self,event):
+        self.statuslabel.configure(text="RIGHT PRESSED")
+        self.snake.direction(self.snake.RIGHT)
+        self.snake.move(self.snake.add(self.snake.head(),self.snake.heading))
+    def callrun(self,event):
+        self._STOP= not self._STOP
+        self.run()
+    def run(self):
+        if self._STOP:return
+        else:
+            self.snake.move(self.snake.add(self.snake.head(),self.snake.heading))
+            self.drawsnake(self.snake)
+            self.root.after(self.speed,self.run)
 
-
+    def grow(self,event):
+        print("EAT")
+        self.snake.grow(self.snake.add(self.snake.head(),self.snake.heading))
+        
 class Board():
     def createtiles(self,rows,cols):
         '''
