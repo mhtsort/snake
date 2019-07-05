@@ -1,5 +1,6 @@
 # SNAKE GAME BY mhtsort 2019
 import tkinter as tk
+import snake_class
 
 class App():
     def __init__(self,root,width=600,height=400):
@@ -20,12 +21,17 @@ class App():
         self.statuslabel=tk.Label(self.frame,text="Status",background="lightgreen")
         self.statuslabel.pack(side="bottom")
         self.board=Board(20,20)
-
+        #Create canvas based on Board size
+        self.canvas=tk.Canvas(root,width=20*20,height=20*20,background="lightblue")
+        self.canvas.pack()
     def restartgame(self):
         pass
     def printstatus(self):
         txt=self.board._str_print_board()
         self.statuslabel.configure(text=txt)
+        self.canvas.create_polygon(20,20,20,40,40,40,40,20,outline="red",tag="snake")
+
+
 class Board():
     def createtiles(self,rows,cols):
         '''
@@ -57,7 +63,7 @@ class Board():
         self.horizontal_tiles_num=horizontal
         self.vertical_tiles_num=vertical
         self.board=self.createtiles(horizontal,vertical)
-        
+
 
 root = tk.Tk()
 app = App(root)
