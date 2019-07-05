@@ -8,7 +8,7 @@ class Snake():
         initiates with a list representing the body of the snake
         """
         self.body=bodylist
-        self.heading=self.RIGHT
+        self.heading=self.UP
         self.HEAD=self.body[0]
     def __repr__(self):
         return str(self.body)

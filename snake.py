@@ -7,7 +7,7 @@ class App():
     def __init__(self,root,width=600,height=400):
         self.root=root
         self._STOP=True
-        self.speed=100
+        self.speed=200
         #Application width and hegth
         self.width=width
         self.height=height
@@ -19,9 +19,9 @@ class App():
         self.restart=tk.Button(self.frame,text="restart",command=self.restartgame)
         self.restart.pack(side="left")
         #Create status label and button for development info
-        self.debug=tk.Button(self.frame,text="print status",command=self.printstatus)
+        self.debug=tk.Button(self.frame,text="Print status",command=self.printstatus)
         self.debug.pack(side="left")
-        self.statuslabel=tk.Label(self.frame,text="Status",background="lightgreen")
+        self.statuslabel=tk.Label(self.frame,text="Press s to start",background="lightgreen")
         self.statuslabel.pack(side="bottom")
         self.board=Board(20,20)
         self.snake=sn.Snake([(3,5),(4,5),(5,5)])
@@ -42,13 +42,12 @@ class App():
         self.canvas.delete("snake")
         for tile in snake.body:
             self.drawpart(tile)
-            print("Draw {}".format(tile))
+            print("Draw {}".format(snake.body))
     def drawpart(self,tile):
         x, y=tile
         x*=20
         y*=20
         self.canvas.create_polygon(x-10,y-10,x+10,y-10,x+10,y+10,x-10,y+10,outline="red",fill="blue",tag="snake")
-        print("Done drawing ({},{})-({},{})-({},{})-({},{})".format(x-10,y-10,x+10,y-10,x+10,y+10,x-10,y+10))
     def keybindings(self):
         self.root.bind("<Up>",self._up_pressed)
         self.root.bind("<Down>",self._down_pressed)
@@ -76,16 +75,35 @@ class App():
         self._STOP= not self._STOP
         self.run()
     def run(self):
-        if self._STOP:return
+        if self._STOP:return print("stop")
         else:
             self.snake.move(self.snake.add(self.snake.head(),self.snake.heading))
-            self.drawsnake(self.snake)
-            self.root.after(self.speed,self.run)
+            print("Before lose \n HEAD:   {} \n SNAKE:{}".format(self.snake.head(),self.snake.body))
+            if self.lose():
+                print("Lose: {}".format(self.lose()))
+            else:
+                self.drawsnake(self.snake)
+                self.root.after(self.speed,self.run)
 
     def grow(self,event):
         print("EAT")
         self.snake.grow(self.snake.add(self.snake.head(),self.snake.heading))
-        
+    def lose(self):
+        if self.loseconditions():
+            print("Lose conditions True")
+            self.statuslabel.configure(text="YOU LOSE",fg="red")
+            self.STOP=True
+            return True
+        else:
+            print("Lose conditions False")
+            return False
+    def loseconditions(self):#TODO
+        x,y=self.snake.head()
+        print(">>Head in lose conditions x={} y={}".format(x,y))
+        borders=self.snake.head()[0]>20 or self.snake.head()[0]<0 or self.snake.head()[1]>20 or self.snake.head()[1]<0
+        head_eats_tail= len(self.snake.body)>len(set(self.snake.body))
+        if borders or head_eats_tail:return True
+        else:return False
 class Board():
     def createtiles(self,rows,cols):
         '''
